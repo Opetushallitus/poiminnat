@@ -1,0 +1,9 @@
+{
+  "name": "bug-1058",
+  "version": "1.0.0",
+  "description": "poiminta",
+  "dependencies": {
+    "fast-csv": "latest",
+    "mongodb": "latest"
+  }
+}
