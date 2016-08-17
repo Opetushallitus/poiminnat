@@ -1,18 +1,18 @@
 # Kevään 2016 Korkeakouluhaun tuloskirjeiden poiminta
 
-Tässä poiminnassa haetaan haussa lähetettyjen tuloskirjeiden määrä eriteltynä korkeakouluittain ja kirjetyypeittäin. Tämä sen vuoksi, että 
+Tässä poiminnassa haetaan haussa lähetettyjen tuloskirjeiden määrä eriteltynä korkeakouluittain ja kirjetyypeittäin. Tämä sen vuoksi, että OPH lähettää kirjeet, mutta kouluilta peritään korvaus hakijamäärien suhteessa.
 
 ###Alkuvalmistelut
 
-1. Asenna node
+1. Asenna node.
 
-1. Aja `npm install`
+1. Aja `npm install`.
 
 1. Hae Tarjontapalvelun haun hallinnasta exceltiedosto haun hakukohteista. Ota siitä talteen hakukohteen oidi ja vastaavan organisaation nimi. Tallenna tämä JSONin `hakukohdeToOrganisaatio.json` tiedostoksi. Katso esimerkkitiedostosta mallia.
 
     https://virkailija.opintopolku.fi/tarjonta-app/index.html#/haku/1.2.246.562.29.75203638285
 
-1. Päivitä tiedostosta `1_haePostillaLahetetytHenkilot.sql` tarvittavat kirjelahetys_id:t. Nämä saa kaivamalla viestintapalvelun kannasta `viestinta-db.prod.oph.ware.fi:5432` poiminnassa speksattua aikaväliä vastaavat kirjelähetykset.
+1. Päivitä tiedostosta `1_haePostillaLahetetytHenkilot.sql` tarvittavat päivämärät ja haun oid. Vaihtoehdoisesti voit määritellä tunnetut kirjelähetys idt käsin.
 
     ```
     SELECT * 
@@ -30,11 +30,11 @@ Tässä poiminnassa haetaan haussa lähetettyjen tuloskirjeiden määrä eritelt
 
 ###Poiminta
 
-1. Aja `1_haePostillaLahetetytHenkilot.sql` viestinta-db.prod.oph.ware.fi:5432 kantaa vasten ja tallenna tulokset csv:nä. `postillaLahetetytHenkilotJaMaat.csv`
+1. Aja `1_haePostillaLahetetytHenkilot.sql` viestinta-db.prod.oph.ware.fi:5432 kantaa vasten ja tallenna tulokset csv:nä. `postillaLahetetytHenkilotJaMaat.csv`.
 
-1. Muokkaa csv:stä json tiedosto `postillaLahetetytHenkilotJaMaat.json`, jossa jokaista henkilöoidia vastaa maakoodi.
+1. Muokkaa csv:stä json tiedosto `postillaLahetetytHenkilotJaMaat.json`, jossa jokaista henkilöoidia vastaa maakoodi. Katso esimerkkitiedostosta mallia.
 
 1. Aja `node 2_hae_hakemus_oidit.js`
 
-1. Ota tulokset tiedostosta `hakemukset.csv` Exceliin ja muokkaa virkailijayhteensopivaksi
+1. Ota tulokset tiedostosta `hakemukset.csv` Exceliin ja muokkaa virkailijayhteensopivaksi.
 
