@@ -31,10 +31,13 @@ Tässä poiminnassa haetaan haussa lähetettyjen tuloskirjeiden määrä eritelt
 ###Poiminta
 
 1. Aja `1_haePostillaLahetetytHenkilot.sql` viestinta-db.prod.oph.ware.fi:5432 kantaa vasten ja tallenna tulokset csv:nä. `postillaLahetetytHenkilotJaMaat.csv`.
+    1. Tai vaihtoehtoisesti kopioi sql-kysely pgAdminiin ja "Query execute to file", Quote char tyhjä ja lisää tiedostoon {} alkuun ja loppuun sekä poista lopusta viimeinen , (pilkku) jolloin saat valmiiksi kohdassa kaksi tarvittavan json-tiedoston.
 
 1. Muokkaa csv:stä json tiedosto `postillaLahetetytHenkilotJaMaat.json`, jossa jokaista henkilöoidia vastaa maakoodi. Katso esimerkkitiedostosta mallia.
 
-1. Aja `node 2_hae_hakemus_oidit.js`
+1. Poimi sijoitteluajoId hakemalla tuotannosta jonkin hakukohteen suurin sijoitteluajoId ja laita se 2_hae_hakemus_oidit.js tiedostoon.
+
+1. Aja `node 2_hae_hakemus_oidit.js` (tässä kohdassa tarvitset yhteyden Mongoon.)
 
 1. Ota tulokset tiedostosta `hakemukset.csv` Exceliin ja muokkaa virkailijayhteensopivaksi.
 
