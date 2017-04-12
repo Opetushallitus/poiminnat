@@ -1,0 +1,9 @@
+{
+  "name": "bug-1382",
+  "version": "1.0.0",
+  "description": "kielikoodinvaihto",
+  "dependencies": {
+    "mongodb": "latest"
+  }
+}
+
