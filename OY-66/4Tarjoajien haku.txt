@@ -1,0 +1,40 @@
+Hetaan tarjoajien yhteystiedot organisaatiopalvelusta nodella. Tulostaa logille csv muotoiset yhteysiedot.
+
+let request = require('request');
+var json2csv = require('json2csv');
+
+let organisaatios = [
+        {org:'asd', hakukohde:'sad'}
+];
+Array.prototype.diff = function(a) {return this.filter(function(i) {return a.indexOf(i) < 0;});};
+
+let orgoids = organisaatios.map(function(a){return a.org});
+let json = {"limit":orgoids.length, "oidList": orgoids};
+request.post(
+    'https://virkailija.opintopolku.fi/organisaatio-service/rest/organisaatio/v2/yhteystiedot/hae',
+    { json: json },
+    function (error, response, body) {
+        let responseoids = body.map(function(a){return a.oid});
+        let myoids = orgoids;
+
+        console.log("Errors:" + myoids.diff(responseoids));
+
+        for (let i = 0; i < body.length; i++) {
+            const res = body[i];
+            for (let j = 0; j < organisaatios.length; j++) {
+                let org = organisaatios[j];
+                if(org.org !== res.oid) continue;
+
+                org.oid=res.oid;
+                org.nimi = res.nimi.en || res.nimi.sv || res.nimi.fi;
+                org.puh = Object.values(res.puhelinnumero)[0];
+                org.mail = Object.values(res.emailOsoite)[0];
+                organisaatios[j]=org;
+            }
+        }
+        let fields = ['oid', 'nimi', 'puh', 'mail', 'hakukohde'];
+        let result = json2csv({ data: Object.values(organisaatios), fields: fields });
+        console.log(result);
+    }
+);
+

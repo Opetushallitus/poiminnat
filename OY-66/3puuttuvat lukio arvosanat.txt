@@ -1,0 +1,17 @@
+Puuttuvat arvosanat: Lähtölukiot joiden hakijoilla lukion suorituksia 2017 joilta puuttuvat arvosanat
+
+HUOM! ylioppilastutkinnottoman lukiosuorituksen komo oid ON IHAN OIKEASTI "TODO lukio komo oid". Älä
+käytä tämän selvittelyyn enempää aikaa.
+
+Suoritusrekisterin possuun
+select distinct
+  myontaja
+from suoritus as s
+where komo = 'TODO lukio komo oid' and valmistuminen > '2017-05-01' and tila = 'KESKEN' and vahvistettu = false and
+      deleted = false and not EXISTS(select 1
+                                     from arvosana
+                                     where suoritus = s.resource_id)
+
+---
+
+Katso seuraavaksi 4Tarjoajien haku
