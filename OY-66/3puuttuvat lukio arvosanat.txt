@@ -7,7 +7,7 @@ Suoritusrekisterin possuun
 select distinct
   myontaja
 from suoritus as s
-where komo = 'TODO lukio komo oid' and valmistuminen > '2017-05-01' and tila = 'KESKEN' and vahvistettu = false and
+where komo = 'TODO lukio komo oid' and valmistuminen > '2017-05-01' and current = true and vahvistettu = false and
       deleted = false and not EXISTS(select 1
                                      from arvosana
                                      where suoritus = s.resource_id)

@@ -2,46 +2,55 @@ Katostaan hakemuksilta mitä pisteitä puuttuu:
 
 
 db.application.find({applicationSystemId:"1.2.246.562.29.10108985853"}).forEach(function(h){
-	if(h.additionalInfo){
-		Object.keys(h.additionalInfo).forEach(function(key){
-			if(h.additionalInfo[key] === "MERKITSEMATTA"){
-				print(key + " " + h.oid)
-			}
-		})
-	}
+  if(h.additionalInfo){
+    Object.keys(h.additionalInfo).forEach(function(key){
+      if(h.additionalInfo[key] === "MERKITSEMATTA"){
+        print("{oid:'" + h.oid + "',koe:'" + key.substring(0,key.length - 15) + "'},")
+      }
+    })
+  }
 })
 
 
 ---
 
-Koosta edellisestä vastauksesta valintakoetunnisteet ja oidit erilleen.
+Kopioi edellisestä vastauksesta valintakoetunnisteet ja oidit alle
 Riivitään valintalaskentakoostemongosta soveltuvuuskokeiden järjestäjien hakukohteet:
 
-var valintakoetunnistees=[
-'Kauneudenhoitoalan perustutkinto, pk, pääsy- ja soveltuvuuskoe',
-'Lapsi- ja perhetyön perustutkinto, pk, pääsy- ja soveltuvuuskoe',
-'Logistiikan perustutkinto, pk, pääsy- ja soveltuvuuskoe',
-'Nuoriso- ja vapaa-ajan ohjauksen perustutkinto, pk, pääsy- ja soveltuvuuskoe',
-'Sosiaali- ja terveysalan perustutkinto, pk, pääsy- ja soveltuvuuskoe',
-'Sosiaali- ja terveysalan perustutkinto, yo, pääsy- ja soveltuvuuskoe',
-'Turvallisuusalan perustutkinto, pk, pääsy- ja soveltuvuuskoe'
+var data = [
+    {oid: '1.2.246.562.11.00008811521', koe: '1_2_246_562_20_28220097415_urheilija_lisapiste'},
+    {oid: '1.2.246.562.11.00008118907', koe: '1_2_246_562_20_48305952789_urheilija_lisapiste'}
+  ...
+
 ]
-var oids = [
-'1.2.246.562.11.00008098771'
-]
-db.ValintakoeOsallistuminen.find({"hakutoiveet.valinnanVaiheet.valintakokeet.valintakoeTunniste":{$in:valintakoetunnistees},
-  								 "hakutoiveet.valinnanVaiheet.valintakokeet.osallistuminenTulos.osallistuminen": "OSALLISTUU",
-  								 "hakemusOid":{$in:oids}}).forEach(function(h){
-  								 h.hakutoiveet.forEach(function(ht){
-  								  ht.valinnanVaiheet.forEach(function(vv){
-  								    vv.valintakokeet.forEach(function(vk){
-  								      if(valintakoetunnistees.indexOf(vk.valintakoeTunniste) > -1 && vk.osallistuminenTulos.osallistuminen === "OSALLISTUU"){
-  								        print(h.hakemusOid + " " + vk.valintakoeTunniste + " " + vk.osallistuminenTulos.osallistuminen + " " + ht.hakukohdeOid)
-  								      }
-  								    })
-  								  })
-  								 })
-  								 })
+db.ValintakoeOsallistuminen.find({
+  "hakutoiveet.valinnanVaiheet.valintakokeet.valintakoeTunniste": {
+    $in: data.map(function(a) {
+      return a.koe
+    })
+  },
+  "hakutoiveet.valinnanVaiheet.valintakokeet.osallistuminenTulos.osallistuminen": "OSALLISTUU",
+  "hakemusOid": {
+    $in: data.map(function(a) {
+      return a.oid
+    })
+  }
+}).forEach(function(h) {
+  h.hakutoiveet.forEach(function(ht) {
+    ht.valinnanVaiheet.forEach(function(vv) {
+      vv.valintakokeet.forEach(function(vk) {
+
+        data.forEach(function(oidKoePair) {
+          if (h.hakemusOid === oidKoePair.oid && vk.valintakoeTunniste === oidKoePair.koe && vk.osallistuminenTulos.osallistuminen === "OSALLISTUU") {
+            print(ht.hakukohdeOid + " " + h.hakemusOid + " " + vk.valintakoeTunniste + " " + vk.osallistuminenTulos.osallistuminen)
+          }
+        })
+
+
+      })
+    })
+  })
+})
 
 
 ---
@@ -55,6 +64,7 @@ from hakukohde h
   join koulutusmoduuli_toteutus k on kh.koulutus_id = k.id
 where h.oid in (
   '1.2.246.562.20.60967919402'
+  ...
 );
 
 ---
