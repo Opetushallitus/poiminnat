@@ -1,6 +1,7 @@
-Tehtävä:
+### Tehtävä
 Ne henkilöt, joilla on perusopetuksen tai kymppiluokan suoritus 2017, mutta eivät ole hakeneet missään perusopetusen jälkeisen koulutuksen haussa tai lisähaussa.
 
+### Toteutus
 Haetaan suoritukset suresta:
 
 https://virkailija.opintopolku.fi/suoritusrekisteri/rest/v1/suoritukset/?komo=1.2.246.562.13.62959769647&vuosi=2017 > sure_ysi.json
@@ -40,8 +41,8 @@ where h.haku_oid in ('1.2.246.562.29.10108985853', '1.2.246.562.29.57768753733',
 ```
 
 
-###Yhteenveto
-####Valmistuneet
+### Yhteenveto
+#### Valmistuneet
 ```
 wc -l sure_ysi_henkilot.csv //58578
 wc -l sure_kymppi_henkilot.csv //1616
@@ -58,7 +59,7 @@ grep '1.2.246.562.29.57263577488' -c hakeneet_haut.csv
 grep '1.2.246.562.29.59213949841' -c hakeneet_haut.csv 
 ```
 
-####Valmistuneet mutteivät valitut
+#### Valmistuneet mutteivät valitut
 ```
 comm -23 sure_ysi_henkilot.csv hakeneet.csv | wc -l
 comm -23 sure_ysi_henkilot.csv valinnantulokset.csv | wc -l
@@ -67,14 +68,14 @@ comm -23 sure_kymppi_henkilot.csv valinnantulokset.csv | wc -l
 ```
 Käsipelillä tehdään vähennuslasku valinnantuloksettomat - ei-hakeneet, niin saadaan hakenee, mutta hylätyt. 
 
-###Tulokset
-####valmistuneet
+### Tulokset
+#### valmistuneet
 ```
 ysiltä 58578
 kympiltä 1616
 ```
 
-####Hakeneet
+#### Hakeneet
 ```
 Yhteishaku ammatilliseen ja lukioon, kevät 2017     73537
 Lisähaku kevään 2017 ammatillisen ja lukiokoulutuksen yhteishaussa vapaaksi jääneille opiskelupaikoille     3421
@@ -83,7 +84,7 @@ Perusopetuksen jälkeisen valmistavan koulutuksen kevään 2017 lisähaku   71
 Haku erityisopetuksena järjestettävään ammatilliseen koulutukseen, kevät 2017   3109
 Lisähaku erityisopetuksena järjestettävään ammatilliseen koulutukseen, kevät 2017   72
 ```
-####Puuttuvat
+#### Puuttuvat
 ```
 Valmistui ysiltä, ei hakenut         790
 Valmistui ysiltä, haki muttei valittu         2596
