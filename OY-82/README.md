@@ -36,7 +36,7 @@ Valintarekisteristä valinnantulokset.csv:
 select vt.henkilo_oid
 from valinnantilat vt
   join hakukohteet h on h.hakukohde_oid = vt.hakukohde_oid
-where h.haku_oid in ('1.2.246.562.29.10108985853', '1.2.246.562.29.57768753733', '1.2.246.562.29.57263577488') and
+where h.haku_oid in ('1.2.246.562.29.10108985853','1.2.246.562.29.62377116603','1.2.246.562.29.57768753733','1.2.246.562.29.48353453128','1.2.246.562.29.57263577488','1.2.246.562.29.59213949841') and
       vt.tila in ('VarasijaltaHyvaksytty', 'Hyvaksytty');
 ```
 
@@ -49,7 +49,7 @@ wc -l sure_kymppi_henkilot.csv //1616
 
 ```
 
-####Hakeneet
+#### Hakeneet
 ```
 grep '1.2.246.562.29.10108985853' -c hakeneet_haut.csv 
 grep '1.2.246.562.29.62377116603' -c hakeneet_haut.csv 
@@ -86,10 +86,10 @@ Lisähaku erityisopetuksena järjestettävään ammatilliseen koulutukseen, kev�
 ```
 #### Puuttuvat
 ```
-Valmistui ysiltä, ei hakenut         790
-Valmistui ysiltä, haki muttei valittu         2596
-Valmistui kympiltä, ei hakenut          843
-Valmistui kympiltä, haki muttei valittu           105
+Valmistui ysiltä, ei hakenut                  790
+Valmistui ysiltä, haki muttei valittu         732
+Valmistui kympiltä, ei hakenut                843
+Valmistui kympiltä, haki muttei valittu        62
 ```
 
 
