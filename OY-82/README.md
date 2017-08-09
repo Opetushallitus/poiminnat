@@ -4,7 +4,7 @@ Ne henkilöt, joilla on perusopetuksen tai kymppiluokan suoritus 2017, mutta eiv
 Haetaan suoritukset suresta:
 
 https://virkailija.opintopolku.fi/suoritusrekisteri/rest/v1/suoritukset/?komo=1.2.246.562.13.62959769647&vuosi=2017 > sure_ysi.json
-https://virkailija.opintopolku.fi/suoritusrekisteri/rest/v1/suoritukset/?komo=1.2.246.562.5.2013112814572435044876&vuosi=2017 > sure_kumppi.json
+https://virkailija.opintopolku.fi/suoritusrekisteri/rest/v1/suoritukset/?komo=1.2.246.562.5.2013112814572435044876&vuosi=2017 > sure_kymppi.json
 
 Grepataan henkilöt ulos suorituksista
 
