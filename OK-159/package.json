@@ -1,0 +1,8 @@
+{
+  "name": "ok-159",
+  "version": "1.0.0",
+  "description": "poiminta",
+  "dependencies": {
+    "pg": "latest"
+  }
+}
