@@ -18,8 +18,8 @@ var con = new pg.Client({
 
 var haku_oid = '1.2.246.562.29.72521052067';
 var haku_id = 0;
-var hakukohde_id = 0;
-var koulutus_id = 0;
+//var hakukohde_id = 0;
+// var koulutus_id = 0;
 
 con.connect();
 console.log('Haku oid ' + haku_oid);
@@ -45,12 +45,12 @@ function getHakukohdeKoulutus(hakukohde_id){
     });
 }
 
-function parentHasKoulutus(koulutus_id) {
+function parentHasKoulutus(child_koulutus_id, cb, koulutustyyppi_uri) {
     con.query('SELECT k.koulutustyyppi_uri, k.koulutus_uri, k.id, ksk.koulutus_sisaltyvyys_id, ks.parent_id ' +
         ' FROM koulutus_sisaltyvyys_koulutus AS ksk ' +
         ' LEFT JOIN koulutus_sisaltyvyys AS ks ON ksk.koulutus_sisaltyvyys_id = ks.id ' +
         ' LEFT JOIN koulutusmoduuli AS k ON ks.parent_id = k.id ' +
-        ' WHERE ksk.koulutusmoduuli_id = $1::int ', [koulutus_id], (err, res) => {
+        ' WHERE ksk.koulutusmoduuli_id = $1::int ', [child_koulutus_id], (err, res) => {
         if(err) {
             console.error(err.stack);
         } else {
@@ -59,20 +59,21 @@ function parentHasKoulutus(koulutus_id) {
                     parent_koulutus_uri = res.rows[0].koulutus_uri;
                     parent_koulutustyyppi_uri = res.rows[0].koulutustyyppi_uri;
                     parent_koulutus_id = res.rows[0].id;
+                    // parent has correct id
                     if (parent_koulutustyyppi_uri != null && parent_koulutustyyppi_uri.search("koulutustyyppi_26") > -1) {
-                        return true;
-                    } else if (alreadyLogged.indexOf(parent_koulutus_uri) == -1) {
+                        // console.log('parent HAS uri 26 ');
+                    } else if(alreadyLogged.indexOf(parent_koulutus_uri) == -1) {
                         if (parent_koulutustyyppi_uri == null) {
                             parent_koulutustyyppi_uri = '|';
                         }
-                        alreadyLogged.push(koulutus_uri);
-                        console.log('Ei koulutustyyppia 26 parent koulutuksella ' + parent_koulutus_uri);
-                        console.log('UPDATE koulutusmoduuli SET koulutustyyppi_uri = \'' + parent_koulutustyyppi_uri + 'koulutustyyppi_26|\' WHERE id = ' + parent_koulutus_id);
-                        return false;
+                        alreadyLogged.push(parent_koulutus_uri);
+//                        console.log('PARENT ' + parent_koulutus_uri);
+                        console.log('UPDATE koulutusmoduuli SET koulutustyyppi_uri = \'' + parent_koulutustyyppi_uri + 'koulutustyyppi_26|\' WHERE id = ' + parent_koulutus_id + ';');
+                        // adding for parent rather than child
                     }
                 }
             } else {
-                return false;
+                cb(koulutustyyppi_uri, curr_koulutus_id);
             }
         }
     });
@@ -87,20 +88,22 @@ function hasCorrentKoulutustyyppi(koulutus_id, koulutus_oid, koulutusmoduuli_id)
         } else {
             if(res.rowCount > 0) {
                 koulutus_uri = res.rows[0].koulutus_uri;
-                koulutus_id = res.rows[0].id;
+                curr_koulutus_id = res.rows[0].id;
                 koulutustyyppi_uri = res.rows[0].koulutustyyppi_uri;
 //                    console.log(koulutustyyppi_uri + ' ' + koulutus_uri);
                 if(koulutustyyppi_uri != null && koulutustyyppi_uri.search("koulutustyyppi_26") > -1){
                     // console.log('Found ' + koulutus_uri);
-                } else if(alreadyLogged.indexOf(koulutus_uri) == -1){
-                    if(!parentHasKoulutus(koulutus_id)) {
-                        if(koulutustyyppi_uri == null){
+                } else if(alreadyLogged.indexOf(koulutus_uri) == -1) {
+                    cb = (function (koulutustyyppi_uri, curr_koulutus_id) {
+                        if (koulutustyyppi_uri == null) {
                             koulutustyyppi_uri = '|';
                         }
                         alreadyLogged.push(koulutus_uri);
-                        console.log('Ei koulutustyyppia 26 koulutuksella '  + koulutus_uri);
-                        console.log('UPDATE koulutusmoduuli SET koulutustyyppi_uri = \''+koulutustyyppi_uri+'koulutustyyppi_26|\' WHERE id = '+koulutus_id);
-                    }
+                        console.log('CHILD ' + koulutus_uri);
+                        console.log('UPDATE koulutusmoduuli SET koulutustyyppi_uri = \'' + koulutustyyppi_uri + 'koulutustyyppi_26|\' WHERE id = ' + curr_koulutus_id + ';');
+
+                    });
+                    parentHasKoulutus(curr_koulutus_id, cb, koulutustyyppi_uri);
                 }
             }
         }
