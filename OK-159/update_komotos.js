@@ -23,32 +23,28 @@ con.connect();
 console.log('Haku oid ' + haku_oid);
 
 const updateHakukohdeSQL = 'UPDATE hakukohde SET pohjakoulutusvaatimus_koodi_uri = $1 WHERE id = $2 '
-const updateKoulutusSQL = 'UPDATE koulutusmoduuli_toteutus SET pohjakoulutusvaatimus_uri = \'\', koulutustyyppi_uri = $1 WHERE id = $2 '
+const updateKoulutusSQL = 'UPDATE koulutusmoduuli_toteutus SET pohjakoulutusvaatimus_uri = \'\', koulutustyyppi_uri = $1, toteutustyyppi = $2 WHERE id = $3 '
 
 console.log('Have you run check_komotos.js? If yes and all is well, comment exit row!');
 process.exit(1);
 
-function updateHakukohde(values, cb){
-    console.log("hakukohde");
-    console.log(values);
+function updateHakukohde(values, koulutus_id, hakukohde_id){
     con.query(updateHakukohdeSQL, values, (err, res) => {
         if (err) {
             console.error(err.stack);
         } else {
-            console.log('done ' + values);
-            cb();
+            console.log('hakukohde ' + values + " done ");
+            updateKoulutus(['koulutustyyppi_26#1', 'AMMATILLINEN_PERUSTUTKINTO_ALK_2018', koulutus_id], hakukohde_id);
         }
     });
 }
 
 function updateKoulutus(values, hakukohde_id){
-    console.log("koulutus for hakukohde " + hakukohde_id);
-    console.log(values);
     con.query(updateKoulutusSQL, values, (err, res) => {
         if (err) {
             console.error(err.stack);
         } else {
-            console.log('done ' + values);
+            console.log("koulutus " + values + " for hakukohde " + hakukohde_id + " done ");
         }
     });
 }
@@ -66,7 +62,8 @@ function updateHakukohdeAndKoulutus(hakukohde_id){
                         // now we have koulutus and hakukohde
                         // ﻿pohjakoulutusvaatimustoinenaste_yo
                         pohjat = res3.rows[j].pohjakoulutusvaatimus_uri.split("#")[0];
-                        updateHakukohde([pohjat, hakukohde_id], function(){ updateKoulutus(['koulutustyyppi_26', res3.rows[j].id], hakukohde_id);});
+                        koulutus_id = res3.rows[j].id;
+                        updateHakukohde([pohjat, hakukohde_id], koulutus_id, hakukohde_id);
                     }
                 }
             }
