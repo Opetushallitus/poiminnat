@@ -2,10 +2,10 @@ var pg = require('pg')
 
 var pq = {
     'host': 'localhost',
-    'port': '5432',
+    'port': '9999',
     'user': 'oph',
-    'password': 'oph',
-    'database': 'tarjonta_2017'
+    'password': 'ophophoph',
+    'database': 'tarjonta'
 };
 
 var con = new pg.Client({
@@ -16,7 +16,7 @@ var con = new pg.Client({
     database: pq.database
 })
 
-var haku_oid = '1.2.246.562.29.72521052067';
+var haku_oid = '1.2.246.562.29.73073706977';
 var haku_id = 0;
 
 con.connect();
@@ -26,7 +26,7 @@ const updateHakukohdeSQL = 'UPDATE hakukohde SET pohjakoulutusvaatimus_koodi_uri
 const updateKoulutusSQL = 'UPDATE koulutusmoduuli_toteutus SET pohjakoulutusvaatimus_uri = \'\', koulutustyyppi_uri = $1, toteutustyyppi = $2 WHERE id = $3 '
 
 console.log('Have you run check_komotos.js? If yes and all is well, comment exit row!');
-process.exit(1);
+// process.exit(1);
 
 function updateHakukohde(values, koulutus_id, hakukohde_id){
     con.query(updateHakukohdeSQL, values, (err, res) => {
@@ -53,7 +53,7 @@ function updateHakukohdeAndKoulutus(hakukohde_id){
     con.query('SELECT k.koulutustyyppi_uri, k.id, k.oid, k.pohjakoulutusvaatimus_uri, k.koulutusmoduuli_id ' +
         ' FROM koulutusmoduuli_toteutus AS k ' +
         ' LEFT JOIN hakukohde_koulutusmoduuli_toteutus_tarjoajatiedot AS kh ON k.oid = kh.koulutusmoduuli_toteutus_oid ' +
-        ' WHERE (k.koulutustyyppi_uri = \'koulutustyyppi_1#2\' OR k.koulutustyyppi_uri = \'koulutustyyppi_13#2\') AND kh.hakukohde_id = $1::int ', [hakukohde_id], (err3, res3) => {
+        ' WHERE (k.koulutustyyppi_uri = \'koulutustyyppi_1#2\' OR k.koulutustyyppi_uri = \'koulutustyyppi_13#2\' OR k.koulutustyyppi_uri = \'koulutustyyppi_1#1\' OR k.koulutustyyppi_uri = \'koulutustyyppi_13#1\') AND kh.hakukohde_id = $1::int ', [hakukohde_id], (err3, res3) => {
             if(err3) {
                 console.error(err3.stack);
             } else {
