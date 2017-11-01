@@ -23,7 +23,8 @@ con.connect();
 console.log('Haku oid ' + haku_oid);
 
 const updateHakukohdeSQL = 'UPDATE hakukohde SET pohjakoulutusvaatimus_koodi_uri = $1 WHERE id = $2 '
-const updateKoulutusSQL = 'UPDATE koulutusmoduuli_toteutus SET pohjakoulutusvaatimus_uri = \'\', koulutustyyppi_uri = $1, toteutustyyppi = $2 WHERE id = $3 '
+const updateKoulutusSQL = 'UPDATE koulutusmoduuli_toteutus SET pohjakoulutusvaatimus_uri = \'\', koulutustyyppi_uri = $1, toteutustyyppi = $2, viimindeksointipvm = NULL WHERE id = $3 '
+const deleteKoulutuslajiSQL = 'DELETE FROM koulutusmoduuli_toteutus_koulutuslaji WHERE koulutusmoduuli_toteutus_id = $1 '
 
 console.log('Have you run check_komotos.js? If yes and all is well, comment exit row!');
 // process.exit(1);
@@ -35,6 +36,7 @@ function updateHakukohde(values, koulutus_id, hakukohde_id){
         } else {
             console.log('hakukohde ' + values + " done ");
             updateKoulutus(['koulutustyyppi_26#1', 'AMMATILLINEN_PERUSTUTKINTO_ALK_2018', koulutus_id], hakukohde_id);
+            deleteKoulutuslaji([koulutus_id]);
         }
     });
 }
@@ -45,6 +47,16 @@ function updateKoulutus(values, hakukohde_id){
             console.error(err.stack);
         } else {
             console.log("koulutus " + values + " for hakukohde " + hakukohde_id + " done ");
+        }
+    });
+}
+
+function deleteKoulutuslaji(values){
+    con.query(deleteKoulutuslajiSQL, values, (err, res) => {
+        if (err) {
+            console.error(err.stack);
+        } else {
+            // console.log("koulutus " + values + " for hakukohde " + hakukohde_id + " done ");
         }
     });
 }
