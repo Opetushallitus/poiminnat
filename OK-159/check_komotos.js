@@ -2,10 +2,10 @@ var pg = require('pg')
 
 var pq = {
     'host': 'localhost',
-    'port': '9999',
-    'user': 'oph',
-    'password': 'ophophoph',
-    'database': 'tarjonta'
+    'port': '5432',
+    'user': 'postgres',
+    'password': 'postgres',
+    'database': 'tarjonta_2017'
 };
 
 var con = new pg.Client({
@@ -16,7 +16,7 @@ var con = new pg.Client({
     database: pq.database
 })
 
-var haku_oid = '1.2.246.562.29.73073706977';
+var haku_oid = '1.2.246.562.29.65903924994';
 var haku_id = 0;
 //var hakukohde_id = 0;
 // var koulutus_id = 0;
@@ -65,7 +65,7 @@ function parentHasKoulutus(child_koulutus_id, cb, koulutustyyppi_uri) {
                     parent_koulutus_id = res.rows[0].id;
                     // parent has correct id
                     if (parent_koulutustyyppi_uri != null && parent_koulutustyyppi_uri.search("koulutustyyppi_26") > -1) {
-                        console.log('parent HAS uri 26 ');
+                        // console.log('parent HAS uri 26 ');
                     } else if(alreadyLogged.indexOf(parent_koulutus_uri) == -1) {
                         if (parent_koulutustyyppi_uri == null) {
                             parent_koulutustyyppi_uri = '|';
@@ -122,20 +122,19 @@ con.query('SELECT id, oid ' +
         console.error(err.stack);
         exit();
     }
-    haku_id = res.rows[0].id;
-    console.log('Haku id ' + res.rows[0].id);
-    con.query('SELECT id, oid, haku_id, pohjakoulutusvaatimus_koodi_uri ' +
-        ' FROM hakukohde WHERE haku_id = $1::int ', [haku_id], (err2, res2) => {
-        if(err2){
-            console.error(err2.stack);
-        }
-        if(res2.rowCount > 0) {
-            var cc = res2.rowCount;
-            res2.rows.forEach((row, cc) => {
-//                console.log('Hakukohde id: ' + row.id);
-                getHakukohdeKoulutus(row.id);
-            });
-        }
-    });
+    if(res.rowCount > 0) {
+        haku_id = res.rows[0].id;
+        console.log('Haku id ' + res.rows[0].id);
+        con.query('SELECT id, oid, haku_id, pohjakoulutusvaatimus_koodi_uri ' +
+            ' FROM hakukohde WHERE haku_id = $1::int ', [haku_id], (err2, res2) => {
+            if(err2) {
+                console.error(err2.stack);
+            }
+            if(res2.rowCount > 0) {
+                var cc = res2.rowCount;
+                res2.rows.forEach((row, cc) => { getHakukohdeKoulutus(row.id); });
+            }
+        });
+    }
 });
 

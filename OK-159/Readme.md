@@ -16,3 +16,12 @@ Uudessa koulutustyypissä pohjakoulutusvaatimus ei ole pakollinen koulutuksessa,
 3. Poistaa näiltä koulutustyypeiltä koulutuslajit Aikuiskoulutus, Avoin kaikille sekä Nuorten koulutus jotka ovat poistuneet tuolta uudelta koulutustyypiltä
 
 
+##Siivousscripti joka tekee seuraavaa
+
+Nyt on tuplakoulutukset jotka viittaavat eri hakukohteisiin, joten siivotaan toinen (ei pk) pois. Asetetaan koulutus POISTETTU tilaan ja muokataan linkitystä hakukohteeseen.
+
+
+Eli ajojärjestys on 
+1. node check_komotos.js
+2. node update_komotos.js
+3. node cleanup_komotos.js

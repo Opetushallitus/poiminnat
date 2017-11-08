@@ -2,10 +2,10 @@ var pg = require('pg')
 
 var pq = {
     'host': 'localhost',
-    'port': '9999',
-    'user': 'oph',
-    'password': 'ophophoph',
-    'database': 'tarjonta'
+    'port': '5432',
+    'user': 'postgres',
+    'password': 'postgres',
+    'database': 'tarjonta_2017'
 };
 
 var con = new pg.Client({
@@ -16,8 +16,9 @@ var con = new pg.Client({
     database: pq.database
 })
 
-var haku_oid = '1.2.246.562.29.73073706977';
+var haku_oid = '1.2.246.562.29.65903924994';
 var haku_id = 0;
+var debug = true;
 
 con.connect();
 console.log('Haku oid ' + haku_oid);
@@ -26,39 +27,52 @@ const updateHakukohdeSQL = 'UPDATE hakukohde SET pohjakoulutusvaatimus_koodi_uri
 const updateKoulutusSQL = 'UPDATE koulutusmoduuli_toteutus SET pohjakoulutusvaatimus_uri = \'\', koulutustyyppi_uri = $1, toteutustyyppi = $2, viimindeksointipvm = NULL WHERE id = $3 '
 const deleteKoulutuslajiSQL = 'DELETE FROM koulutusmoduuli_toteutus_koulutuslaji WHERE koulutusmoduuli_toteutus_id = $1 '
 
-console.log('Have you run check_komotos.js? If yes and all is well, comment exit row!');
-// process.exit(1);
+console.log('All good? Switch debug to false.');
 
 function updateHakukohde(values, koulutus_id, hakukohde_id){
-    con.query(updateHakukohdeSQL, values, (err, res) => {
-        if (err) {
-            console.error(err.stack);
-        } else {
-            console.log('hakukohde ' + values + " done ");
-            updateKoulutus(['koulutustyyppi_26#1', 'AMMATILLINEN_PERUSTUTKINTO_ALK_2018', koulutus_id], hakukohde_id);
-            deleteKoulutuslaji([koulutus_id]);
-        }
-    });
+    if(debug) {
+        console.log('updating hakukohde ' + values + ' koulutus ' + koulutus_id + ' hakukohde ' + hakukohde_id);
+        updateKoulutus(['koulutustyyppi_26#1', 'AMMATILLINEN_PERUSTUTKINTO_ALK_2018', koulutus_id], hakukohde_id);
+        deleteKoulutuslaji([koulutus_id]);
+    } else {
+        con.query(updateHakukohdeSQL, values, (err, res) => {
+            if(err) {
+                console.error(err.stack);
+            } else {
+                console.log('hakukohde ' + values + " done ");
+                updateKoulutus(['koulutustyyppi_26#1', 'AMMATILLINEN_PERUSTUTKINTO_ALK_2018', koulutus_id], hakukohde_id);
+                deleteKoulutuslaji([koulutus_id]);
+            }
+        });
+    }
 }
 
 function updateKoulutus(values, hakukohde_id){
-    con.query(updateKoulutusSQL, values, (err, res) => {
-        if (err) {
-            console.error(err.stack);
-        } else {
-            console.log("koulutus " + values + " for hakukohde " + hakukohde_id + " done ");
-        }
-    });
+    if(debug) {
+        console.log('updating koulutus ' + values);
+    } else {
+        con.query(updateKoulutusSQL, values, (err, res) => {
+            if(err) {
+                console.error(err.stack);
+            } else {
+                console.log("koulutus " + values + " for hakukohde " + hakukohde_id + " done ");
+            }
+        });
+    }
 }
 
 function deleteKoulutuslaji(values){
-    con.query(deleteKoulutuslajiSQL, values, (err, res) => {
-        if (err) {
-            console.error(err.stack);
-        } else {
-            // console.log("koulutus " + values + " for hakukohde " + hakukohde_id + " done ");
-        }
-    });
+    if(debug) {
+        console.log('deleting koulutuslaji from koulutus ' + values);
+    } else {
+        con.query(deleteKoulutuslajiSQL, values, (err, res) => {
+            if(err) {
+                console.error(err.stack);
+            } else {
+                // console.log("koulutus " + values + " for hakukohde " + hakukohde_id + " done ");
+            }
+        });
+    }
 }
 
 function updateHakukohdeAndKoulutus(hakukohde_id){
