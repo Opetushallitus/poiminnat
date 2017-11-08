@@ -27,7 +27,7 @@ console.log('Haku oid ' + haku_oid);
 
 const updateKoulutusSQL = 'UPDATE hakukohde_koulutusmoduuli_toteutus_tarjoajatiedot SET koulutusmoduuli_toteutus_oid = $1 WHERE koulutusmoduuli_toteutus_oid = $2 '
 const updateKoulutusSQL2 = 'UPDATE koulutus_hakukohde SET koulutus_id = $1 WHERE koulutus_id = $2 '
-const deleteKoulutusSQL = 'UPDATE koulutusmoduuli_toteutus SET tila = $1, unique_external_id = NULL, viimpaivityspvm = NULL WHERE oid = $2 '
+const deleteKoulutusSQL = 'UPDATE koulutusmoduuli_toteutus SET tila = $1, unique_external_id = NULL, viimindeksointipvm = NULL WHERE oid = $2 '
 
 console.log('All good? Switch debug to false.');
 
