@@ -19,18 +19,21 @@ var con = new pg.Client({
 var haku_oid = '1.2.246.562.29.98069713083';
 var haku_id = 0;
 var debug = true;
+var runFix = false;
+var runOsaamisala = true;
 
 con.connect();
+
 console.log('Haku oid ' + haku_oid);
 
-//﻿UPDATE koulutusmoduuli_toteutus SET viimindeksointipvm = NULL WHERE id IN (SELECT k.id FROM koulutusmoduuli_toteutus k LEFT JOIN koulutus_hakukohde kh ON kh.koulutus_id = k.id LEFT JOIN hakukohde h ON kh.hakukohde_id = h.id WHERE h.haku_id = xxxx);
+// Helper for
+//﻿ UPDATE koulutusmoduuli_toteutus SET viimindeksointipvm = NULL WHERE id IN (SELECT k.id FROM koulutusmoduuli_toteutus k LEFT JOIN koulutus_hakukohde kh ON kh.koulutus_id = k.id LEFT JOIN hakukohde h ON kh.hakukohde_id = h.id WHERE h.haku_id = xxxx);
 
 const updateKoulutusSQL = 'UPDATE hakukohde_koulutusmoduuli_toteutus_tarjoajatiedot SET koulutusmoduuli_toteutus_oid = $1 WHERE koulutusmoduuli_toteutus_oid = $2 '
 const updateKoulutusSQL2 = 'UPDATE koulutus_hakukohde SET koulutus_id = $1 WHERE koulutus_id = $2 '
 const deleteKoulutusSQL = 'UPDATE koulutusmoduuli_toteutus SET tila = $1, unique_external_id = NULL, viimindeksointipvm = NULL WHERE oid = $2 '
 
 console.log('All good? Switch debug to false.');
-
 
 
 function deleteKoulutus(values){
@@ -86,6 +89,7 @@ NEW ROW INTO LINK TABLE SO THAT koulutus_id_1 links to - hakukohde yo
 
 */
 
+if(runFix){
 con.query('SELECT id, oid ' +
     ' FROM haku WHERE oid = $1::text ', [haku_oid], (err, res) => {
     if (err) {
@@ -142,4 +146,118 @@ con.query('SELECT id, oid ' +
         }
     });
 });
+
+} // end if run fix
+
+// koodisto stuff
+if(runOsaamisala) {
+    var osaamisalaMap = [
+
+        {'from' : '1607', 'to': '1703'},
+        {'from' : '1641', 'to': '1704'},
+        {'from' : '1642', 'to': '1705'},
+
+        {'from' : '1643', 'to': '1717'},
+        {'from' : '1644', 'to': '1718'},
+
+        {'from' : '1525', 'to': '1719'},
+        {'from' : '1526', 'to': '1720'},
+        {'from' : '1527', 'to': '1721'},
+        {'from' : '1528', 'to': '1722'},
+        {'from' : '1622', 'to': '1723'},
+        {'from' : '1529', 'to': '1724'},
+
+        {'from' : '1549', 'to': '1725'},
+        {'from' : '1550', 'to': '1726'},
+        {'from' : '1551', 'to': '1727'},
+        {'from' : '1552', 'to': '1728'},
+
+        {'from' : '1661', 'to': '1729'},
+        {'from' : '1662', 'to': '1730'},
+
+        {'from' : '1651', 'to': '1731'},
+        {'from' : '1530', 'to': '1732'},
+
+        {'from' : '1531', 'to': '1733'},
+        {'from' : '1617', 'to': '1734'},
+        {'from' : '1532', 'to': '1735'},
+
+        {'from' : '1657', 'to': '1736'},
+        {'from' : '1658', 'to': '1737'},
+
+        {'from' : '1553', 'to': '1740'},
+        {'from' : '1556', 'to': '1741'},
+        {'from' : '1555', 'to': '1742'},
+        {'from' : '1554', 'to': '1743'},
+
+        {'from' : '1544', 'to': '1748'},
+        {'from' : '2256', 'to': '1749'},
+        {'from' : '1660', 'to': '1750'},
+        {'from' : '1652', 'to': '1751'},
+        {'from' : '1523', 'to': '1752'},
+        {'from' : '1501', 'to': '1753'},
+        {'from' : '1653', 'to': '1754'},
+
+        // four same rows in excel
+
+        {'from' : '1666', 'to': '1537'},
+
+        {'from' : '1630', 'to': '1756'},
+        {'from' : '1504', 'to': '1757'},
+        {'from' : '1505', 'to': '1758'},
+        {'from' : '1506', 'to': '1759'},
+
+        {'from' : '1648', 'to': '1760'},
+        {'from' : '1646', 'to': '1761'},
+        {'from' : '1647', 'to': '1762'},
+        {'from' : '1645', 'to': '1763'},
+
+        {'from' : '1591', 'to': '1764'},
+        {'from' : '1592', 'to': '1765'},
+        {'from' : '1590', 'to': '1766'},
+
+        {'from' : '1621', 'to': '1767'},
+        {'from' : '1620', 'to': '1768'},
+        {'from' : '1580', 'to': '1769'},
+        {'from' : '1582', 'to': '1770'},
+
+        {'from' : '1632', 'to': '1771'},
+        {'from' : '1623', 'to': '1772'},
+        {'from' : '1588', 'to': '1773'},
+        {'from' : '1587', 'to': '1774'},
+
+        {'from' : '1585', 'to': '1775'},
+        {'from' : '1583', 'to': '1776'},
+        {'from' : '1584', 'to': '1777'},
+
+        {'from' : '1615', 'to': '1785'},
+        {'from' : '1600', 'to': '1786'},
+        {'from' : '1655', 'to': '1788'},
+        {'from' : '1510', 'to': '1790'},
+        {'from' : '1656', 'to': '1791'},
+        {'from' : '1511', 'to': '1792'},
+        {'from' : '1513', 'to': '1794'},
+
+        {'from' : '1568', 'to': '1796'},
+        {'from' : '1636', 'to': '1797'},
+        {'from' : '1637', 'to': '1798'}
+    ];
+    // ------- RUN THESE IN PSQL CONSOLE!
+    con.query('SELECT id, oid ' +
+        ' FROM haku WHERE oid = $1::text ', [haku_oid], (err, res) => {
+        if (err) {
+            console.error(err.stack);
+        }
+        haku_id = res.rows[0].id;
+        osaamisalaMap.forEach(function (item){
+            var sql = "UPDATE koulutusmoduuli_toteutus " +
+                " SET viimindeksointipvm = NULL, osaamisala_uri = 'osaamisala_" + item["to"]+ "#1' " +
+                " WHERE id IN (SELECT k.id FROM koulutusmoduuli_toteutus k " +
+                " LEFT JOIN koulutus_hakukohde kh ON kh.koulutus_id = k.id " +
+                " LEFT JOIN hakukohde h ON kh.hakukohde_id = h.id WHERE h.haku_id = " + haku_id + ") AND " +
+                " osaamisala_uri LIKE 'osaamisala_" + item["from"] + "#%' ;";
+            console.log(sql);
+        });
+    });
+}
 
