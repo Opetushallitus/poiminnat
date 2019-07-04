@@ -4,6 +4,12 @@
   "description": "poiminta",
   "dependencies": {
     "fast-csv": "latest",
-    "mongodb": "latest"
-  }
+    "mongodb": "latest",
+    "snyk": "^1.190.0"
+  },
+  "scripts": {
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "snyk": true
 }
